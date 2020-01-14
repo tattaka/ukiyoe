@@ -29,7 +29,7 @@ $ python make_stacking.py
 $ python train.py --config densenet121_mish_jpunet_pl_cfg
 $ python make_submission.py --config densenet121_mish_jpunet_pl_cfg
 ```
-実行することでCV0.91~0.92が，`JPUNet_densenet121_diffrgrad_pl_256x256.csv`を提出することでLB0.927が得られます．
+実行することでCV0.91~0.92が，`predicts/JPUNet_densenet121_diffrgrad_pl_256x256.csv`を提出することでLB0.927が得られます．
 
 ## 動作確認ができている実行環境
 ### PC環境
