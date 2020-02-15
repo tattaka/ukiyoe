@@ -55,3 +55,5 @@ $ python make_submission.py --config densenet121_mish_jpunet_pl_cfg
 * tensorboard==2.0.0
 * tensorboardX==1.8
 * tqdm==4.36.1
+
+Distributed under **MIT License** (See LICENSE)
