@@ -30,7 +30,7 @@ class Config(object):
         self.lr = 1e-3
         self.lr_e = 1e-3
         self.lookahead = False
-        self.tta = True
+        self.tta = False
         self.early_stop = False
         self.mixup = True
         

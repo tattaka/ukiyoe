@@ -4,7 +4,7 @@ import os
 from typing import List  # isort:skip
 
 import numpy as np
-
+import random
 import torch
 from catalyst.dl.core import Callback, CallbackOrder
 from catalyst.dl.callbacks import CriterionCallback
@@ -60,12 +60,14 @@ class CutMixCallback(CriterionCallback):
     def on_batch_start(self, state: RunnerState):
         if not self.is_needed:
             return
-
-        if self.alpha > 0:
-            self.lam = np.random.beta(self.alpha, self.alpha)
+        
+        alpha = random.random() * self.alpha * 0.2 + self.alpha * 0.8
+        
+        if alpha > 0:
+            self.lam = np.random.beta(alpha, alpha)
         else:
             self.lam = 1
-
+            
         self.index = torch.randperm(state.input[self.fields[0]].shape[0])
         self.index.to(state.device)
 

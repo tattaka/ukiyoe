@@ -81,7 +81,7 @@ def main(config):
         if opts.tta:
             tta_model = tta.TTAWrapper(model, tta.fliplr_image2label)
 #             tta_model = tta.TTAWrapper(model, tta.tencrop_image2label, crop_size=(int(opts.img_size[0]*0.9), int(opts.img_size[1]*0.9)))
-            tta_model = tta.TTAWrapper(tta_model, bright_hl_image2label)
+#             tta_model = tta.TTAWrapper(tta_model, bright_hl_image2label)
         else:
             tta_model = model
         model.to(DEVICE)

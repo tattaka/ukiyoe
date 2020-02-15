@@ -49,7 +49,7 @@ from cls_models import get_model
 from sync_batchnorm import convert_model as sbn_convert_model
 # from antialiased_cnns_converter import convert_model as aacnn_convert_model
 
-from my_callbacks import CutMixCallback, LINENotifyCallBack, PixMixCallback
+from my_callbacks import CutMixCallback, LINENotifyCallBack, PixMixCallback, CutMixAndMixupCallback
 
 
 def worker_init_fn(worker_id):
@@ -78,10 +78,8 @@ def main(config):
     opts = config()
     path = opts.path
     train_df = pd.read_csv(f'{path}/train.csv')
-#     test_df = pd.read_csv('predicts/ensemble.csv')
-#     pl_prob = np.load('probabilities/ensemble_test.npy')
-    test_df = pd.read_csv('predicts/stacking_tta.csv')
-    pl_prob = np.load('probabilities/stacking_tta_test.npy')
+    test_df = pd.read_csv('predicts/stacking.csv')
+    pl_prob = np.load('probabilities/stacking_test.npy')
     
     n_train = len(np.load("../input/ukiyoe-train-imgs.npz")["arr_0"])
     n_test = len(np.load("../input/ukiyoe-test-imgs.npz")["arr_0"])
@@ -179,7 +177,8 @@ def main(config):
             callbacks.append(EarlyStoppingCallback(patience=10, min_delta=0.001))
         if opts.mixup:
 #             callbacks.append(MixupCallback(alpha=0.25))
-            callbacks.append(CutMixCallback(alpha=0.25))
+#             callbacks.append(CutMixCallback(alpha=0.25))
+            callbacks.append(CutMixAndMixupCallback(alpha=0.8))
 #             callbacks.append(PixMixCallback(alpha=0.25))
         if opts.accumeration is not None:
             callbacks.append(CriterionCallback())

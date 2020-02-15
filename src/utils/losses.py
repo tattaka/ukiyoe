@@ -5,6 +5,27 @@ from . import lovasz_losses
 from torch.nn.modules.loss import _WeightedLoss
 import torch.nn.functional as F
 
+class OHEMLoss(nn.Module):
+    # https://www.kaggle.com/c/bengaliai-cv19/discussion/128637
+    # TODO: Smoothing, Focal Loss
+    def __init__(self, rate, smooth):
+        super(OHEMLoss, self).__init__()
+        self.rate = rate
+        self.smooth = smooth
+        self.criterion = SmoothCrossEntropyLoss(reduction="none", smoothing=self.smooth)
+        
+    def forward(self, input, target):
+        batch_size = input.size(0) 
+        ohem_cls_loss = self.criterion.forward(input, target)
+
+        sorted_ohem_loss, idx = torch.sort(ohem_cls_loss, descending=True)
+        keep_num = min(sorted_ohem_loss.size()[0], int(batch_size*self.rate) )
+        if keep_num < sorted_ohem_loss.size()[0]:
+            keep_idx_cuda = idx[:keep_num]
+            ohem_cls_loss = ohem_cls_loss[keep_idx_cuda]
+        loss = ohem_cls_loss.sum() / keep_num
+        return loss
+
 class SmoothCrossEntropyLoss(_WeightedLoss):
     # https://stackoverflow.com/questions/55681502/label-smoothing-in-pytorch
     def __init__(self, weight=None, reduction='mean', smoothing=0.0):
@@ -36,7 +57,7 @@ class SmoothCrossEntropyLoss(_WeightedLoss):
         if  self.reduction == 'sum':
             loss = loss.sum()
         elif  self.reduction == 'mean':
-            loss = loss.mean()
+            loss = loss.mean()     
 
         return loss
 
